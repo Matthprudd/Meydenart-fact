@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Meyden Art & Fact V3</title><style>
+:root{--o:#ff5a00;--bg:#070707;--p:#151519;--p2:#202028;--l:#333;--t:#fff;--m:#aaa;--g:#27ae60;--r:#eb5757}
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:radial-gradient(circle at top,#251004,#060606 45%);color:var(--t)}header{padding:18px;background:#050505;border-bottom:4px solid var(--o)}h1{margin:0;color:var(--o)}p{color:var(--m)}main{max-width:1200px;margin:auto;padding:18px}.card{background:var(--p);border:1px solid var(--l);border-radius:18px;padding:18px;margin:14px 0}h2,h3{color:var(--o)}input,select,textarea{width:100%;padding:12px;margin:6px 0 12px;background:#0d0d11;color:#fff;border:1px solid #444;border-radius:10px}button{padding:11px 15px;border:0;border-radius:10px;font-weight:bold;margin:5px;cursor:pointer}.pri{background:var(--o);color:#111}.sec{background:#2b2b33;color:white;border:1px solid #444}.ok{background:var(--g);color:#041}.bad{background:var(--r);color:white}.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.hidden{display:none}.box{white-space:pre-line;background:#09090b;border:1px solid #333;border-radius:12px;padding:14px}.stage{background:#090909;border:1px solid #333;border-radius:16px;padding:28px;display:inline-block}.shirt{width:260px;height:320px;background:#050505;border:3px solid #333;border-radius:60px 60px 25px 25px;position:relative}.shirt:before,.shirt:after{content:"";position:absolute;top:55px;width:70px;height:120px;background:inherit;border:3px solid #333}.shirt:before{left:-54px;transform:rotate(18deg);border-radius:25px}.shirt:after{right:-54px;transform:rotate(-18deg);border-radius:25px}.zone{position:absolute;left:45px;top:75px;width:170px;height:195px;border:2px dashed #777}.logo{position:absolute;left:55px;top:80px;width:110px;height:90px;border:1px solid var(--o);border-radius:8px;color:var(--o);display:flex;align-items:center;justify-content:center;text-align:center;font-weight:bold;cursor:grab;z-index:5;touch-action:none}.logo img{max-width:100%;max-height:100%;pointer-events:none}.steps{display:flex;gap:7px;flex-wrap:wrap}.step{padding:8px 10px;border-radius:999px;background:#222;border:1px solid #444;font-size:12px}.on{outline:2px solid white}.s0{background:#333}.s1{background:#15345c}.s2{background:#3a1b5a}.s3{background:#5a4b12;color:#ffe}.s4{background:#5a2608}.s5{background:#5a1515}.s6,.s7,.s8{background:#124024}.order{border:1px solid #333;border-radius:14px;padding:14px;margin:10px 0;background:#0d0d11}@media(max-width:800px){.grid{grid-template-columns:1fr}.shirt{transform:scale(.86);transform-origin:left top;margin-bottom:-40px}}
+</style></head><body><header><h1>MEYDEN ART & FACT V3</h1><p>Client → Meyden → Nadia → Meyden → Distribution</p></header><main>
+
+<section id="home" class="card">
+<h2>Infrastructure de gestion de merch</h2>
+<p>Une commande entre par le client, devient un dossier Meyden, part en production chez Nadia, revient chez Meyden, puis passe en distribution.</p>
+<button class="pri" onclick="show('client')">Créer commande client</button>
+<button class="sec" onclick="login('meyden')">Admin Meyden</button>
+<button class="sec" onclick="login('nadia')">Portail Nadia</button>
+<p>Codes test : Meyden <b>1984</b> / Nadia <b>2026</b></p>
+</section>
+
+<section id="login" class="card hidden">
+<h2 id="loginTitle">Connexion</h2>
+<input id="pseudo" placeholder="Pseudo">
+<input id="code" maxlength="4" placeholder="Code 4 chiffres">
+<button class="pri" onclick="check()">Entrer</button>
+<button class="sec" onclick="show('home')">Retour</button>
+</section>
+
+<section id="client" class="card hidden">
+<h2>Créer une commande</h2>
+<div class="grid"><div>
+<label>Client / groupe / entreprise</label><input id="clientName" value="Matante Mutante">
+<label>Responsable</label><input id="contact" value="Bruno">
+<label>Courriel</label><input id="email" placeholder="client@email.com">
+<label>Produit</label><select id="product"><option>T-shirt</option><option>Hoodie</option><option>Casquette</option><option>Patch</option><option>Sticker</option></select>
+<label>Quantité du lot</label><input id="qty" type="number" value="50" oninput="calc()">
+<label>Logo / image</label><input id="upload" type="file" accept="image/*">
+<label>Taille logo</label><input id="size" type="range" min="45" max="180" value="110">
+<textarea id="notes">Créer une merch évolutive sans brûler tout le budget dès le départ.</textarea>
+</div><div>
+<div class="stage"><div class="shirt" id="shirt"><div class="zone"></div><div class="logo" id="logo">MEYDEN<br>ART & FACT</div></div></div>
+<p>Déplace le logo avec ton doigt ou ta souris.</p>
+</div></div>
+<div id="rule" class="box"></div>
+<button class="ok" onclick="createOrder()">Créer / envoyer à Meyden</button>
+<button class="sec" onclick="show('home')">Accueil</button>
+</section>
+
+<section id="admin" class="card hidden">
+<h2 id="adminTitle">Tableau</h2>
+<div class="grid"><div>
+<h3>Commandes</h3><div id="list"></div>
+</div><div>
+<h3>Dossier sélectionné</h3><div id="selected" class="box">Aucun dossier.</div>
+<div id="actions"></div>
+<h3>Progression</h3><div id="progress" class="steps"></div>
+</div></div>
+<button class="sec" onclick="render()">Rafraîchir</button>
+<button class="bad" onclick="logout()">Déconnexion</button>
+<button class="bad" onclick="clearAll()">Effacer tout</button>
+</section>
+
+</main><script>
+let role="",loginRole="",selected=null,orders=JSON.parse(localStorage.getItem("maf_orders")||"[]");
+const steps=["⚪ Nouveau dossier","🔵 Analyse Meyden","🟣 Soumission envoyée","🟡 Dépôt reçu","🟠 Transmis à Nadia","🔴 Production Nadia","🟢 Retour Meyden","🟢 Distribution","🟢 Complété"];
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem("maf_orders",JSON.stringify(orders))}
+function show(id){["home","login","client","admin"].forEach(x=>$(x).classList.add("hidden"));$(id).classList.remove("hidden");calc();render()}
+function login(r){loginRole=r;show("login");$("loginTitle").innerText=r=="meyden"?"Connexion Meyden":"Connexion Nadia"}
+function check(){let c=$("code").value;if((loginRole=="meyden"&&c=="1984")||(loginRole=="nadia"&&c=="2026")){role=loginRole;show("admin");$("adminTitle").innerText=role=="meyden"?"Admin Meyden":"Portail Nadia"}else alert("Code incorrect")}
+function logout(){role="";selected=null;show("home")}
+function calc(){let q=Number($("qty")?.value)||0,p=Math.ceil(q/2),b=q-p;if($("rule"))$("rule").innerText=`RÈGLE MEYDEN 50/50\nLot total : ${q}\nImprimé maintenant : ${p}\nBackup vierge : ${b}\n\nLe client réduit le risque de stock mort et garde une réserve pour futur drop, édition limitée ou réimpression.`}
+function createOrder(){let q=Number($("qty").value)||0,p=Math.ceil(q/2),b=q-p;let id="MAF-"+Date.now().toString().slice(-6);orders.push({id,status:0,client:$("clientName").value,contact:$("contact").value,email:$("email").value,product:$("product").value,qty:q,printed:p,backup:b,notes:$("notes").value,history:["Commande créée par le client."]});save();alert("Commande envoyée à Meyden : "+id);show("home")}
+function render(){let visible=orders.filter(o=>role=="nadia"?[4,5].includes(o.status):true);$("list").innerHTML=visible.length?"":"<p>Aucune commande.</p>";visible.forEach(o=>{let d=document.createElement("div");d.className="order";d.innerHTML=`<b>${o.id}</b><br>${o.client} — ${o.product}<br>${steps[o.status]}<br>Lot ${o.qty} : ${o.printed} imprimés / ${o.backup} backup<br><button class="pri" onclick="openOrder('${o.id}')">Ouvrir</button>`;$("list").appendChild(d)});renderSelected()}
+function openOrder(id){selected=id;renderSelected()}
+function get(){return orders.find(o=>o.id==selected)}
+function text(o){return `DOSSIER ${o.id}\n\nSTATUT : ${steps[o.status]}\nCLIENT : ${o.client}\nRESPONSABLE : ${o.contact}\nCOURRIEL : ${o.email}\nPRODUIT : ${o.product}\n\nRÈGLE 50/50\nLot total : ${o.qty}\nImprimé maintenant : ${o.printed}\nBackup vierge : ${o.backup}\n\nNOTES\n${o.notes}\n\nHISTORIQUE\n${o.history.join("\n")}`}
+function renderSelected(){let o=get();if(!o){$("selected").innerText="Aucun dossier.";$("actions").innerHTML="";$("progress").innerHTML="";return}$("selected").innerText=text(o);$("progress").innerHTML="";steps.forEach((s,i)=>{let sp=document.createElement("span");sp.className="step s"+i+(i==o.status?" on":"");sp.innerText=s;$("progress").appendChild(sp)});let a="";if(role=="meyden"){if(o.status==0)a+=btn(1,"Analyser");if(o.status==1)a+=btn(2,"Envoyer soumission");if(o.status==2)a+=btn(3,"Dépôt reçu");if(o.status==3)a+=btn(4,"Transmettre à Nadia");if(o.status==6)a+=btn(7,"Distribuer");if(o.status==7)a+=btn(8,"Compléter")}if(role=="nadia"){if(o.status==4)a+=btn(5,"Démarrer production");if(o.status==5)a+=btn(6,"Production terminée / retour Meyden")}$("actions").innerHTML=a+`<button class="sec" onclick="copy()">Copier dossier</button>`}
+function btn(st,label){return `<button class="ok" onclick="adv(${st})">${label}</button>`}
+function adv(st){let o=get();o.status=st;o.history.push(steps[st]);save();render()}
+function copy(){navigator.clipboard.writeText(text(get())).then(()=>alert("Copié"))}
+function clearAll(){if(confirm("Effacer toutes les commandes?")){orders=[];save();selected=null;render()}}
+$("upload").addEventListener("change",e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=ev=>{$("logo").innerHTML=`<img src="${ev.target.result}">`};r.readAsDataURL(f)});
+$("size").addEventListener("input",e=>{$("logo").style.width=e.target.value+"px";$("logo").style.height=Math.round(e.target.value*.8)+"px"});
+let drag=false,ox=0,oy=0;$("logo").addEventListener("pointerdown",e=>{drag=true;$("logo").setPointerCapture(e.pointerId);let r=$("logo").getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top});$("logo").addEventListener("pointermove",e=>{if(!drag)return;let s=$("shirt").getBoundingClientRect(),l=$("logo");let x=e.clientX-s.left-ox,y=e.clientY-s.top-oy;x=Math.max(0,Math.min(x,$("shirt").clientWidth-l.offsetWidth));y=Math.max(0,Math.min(y,$("shirt").clientHeight-l.offsetHeight));l.style.left=x+"px";l.style.top=y+"px"});$("logo").addEventListener("pointerup",()=>drag=false);
+calc();render();
+</script></body></html>
